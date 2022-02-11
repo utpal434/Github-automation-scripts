@@ -1,5 +1,12 @@
 
 Resources: 
+
+   DemoS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+     AccessControl: PublicRead
+     BucketName: MyS3Bucket
+
    CodeBuildRole:
     Type: AWS::IAM::Role
     Properties:
