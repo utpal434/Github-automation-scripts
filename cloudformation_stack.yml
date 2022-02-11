@@ -1,0 +1,58 @@
+
+Resources: 
+   CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [codebuild.amazonaws.com]
+        Version: '2012-10-17'
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Action:
+                - 'logs:*'
+                - 'ec2:CreateNetworkInterface'
+                - 'ec2:DescribeNetworkInterfaces'
+                - 'ec2:DeleteNetworkInterface'
+                - 'ec2:DescribeSubnets'
+                - 'ec2:DescribeSecurityGroups'
+                - 'ec2:DescribeDhcpOptions'
+                - 'ec2:DescribeVpcs'
+                - 'ec2:CreateNetworkInterfacePermission'
+                - 'ecr:*'
+                - 'codebuild:CreateReportGroup'
+                - 'codebuild:CreateReport'
+                - 'codebuild:UpdateReport'
+                - 'codebuild:BatchPutTestCases'                
+                Effect: Allow
+                Resource: '*'
+   Project:
+      Type: AWS::CodeBuild::Project
+      Properties:
+         Name: GradleDemo_test
+
+         Description: A description about my project
+         ServiceRole: !GetAtt CodeBuildRole.Arn
+         Artifacts:
+            Type: no_artifacts
+         Environment:
+            Type: LINUX_CONTAINER
+            ComputeType: BUILD_GENERAL1_SMALL
+            Image: aws/codebuild/standard:1.0
+            PrivilegedMode: true
+         Source:
+            Location: https://github.com/utpal434/Demo_gradle.git
+            Type: GITHUB
+         TimeoutInMinutes: 10
+         Tags:
+            - Key: Key1
+              Value: Value1
+            - Key: Key2
+              Value: Value2
